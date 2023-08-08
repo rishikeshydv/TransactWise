@@ -62,26 +62,53 @@ func connectBankHandler(c *gin.Context, finicityAppKey, finicityPartnerId, finic
 	}
 
 	// Store `resp.String()` or relevant data in your database for future use
+    customerToken := resp.String()
+
+    // Save the customer token to Firebase
+    firebaseApp := initializeFirebase() // Initialize Firebase app here
+
+    // Assuming you have a "users" collection in Firestore
+    userDocRef := firebaseApp.Collection("users").Doc("your_customer_id")
+
+    _, err = userDocRef.Set(ctx, map[string]interface{}{
+        "customerToken": customerToken,
+    }, firestore.MergeAll)
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to store customer token"})
+        return
+    }
+
 
 	c.Redirect(http.StatusSeeOther, resp.String()) // Redirect user to connectURL
 }
 
 
-func fetchTransactionsHandler(c *gin.Context, finicityAppKey, finicityPartnerId, finicityPartnerSecret string) {
+
+func fetchTransactionsHandler(c *gin.Context) {
+	appKey := os.Getenv("FINICITY_APP_KEY")
+	appSecret := os.Getenv("FINICITY_APP_SECRET")
 
 	client := resty.New()
+	
+    firebaseApp := initializeFirebase() // Initialize Firebase app here
 
-	// Assume you have a customer-specific token stored in the database after bank connection
-	customerToken := "customer_specific_token_from_database"
+    // Assuming you have a "users" collection in Firestore
+    userDocRef := firebaseApp.Collection("users").Doc("your_customer_id")
+
+    // Retrieve the customer token from Firestore
+    userSnapshot, err := userDocRef.Get(ctx)
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve customer token"})
+        return
+    }
+
+    customerToken := userSnapshot.Data()["customerToken"].(string)
+
 
 	resp, err := client.R().
-	SetHeader("Content-Type", "application/x-www-form-urlencoded").
-	SetFormData(map[string]string{
-		"partnerId":     finicityPartnerId,
-		"partnerSecret": finicityPartnerSecret,
-		"appKey":        finicityAppKey,
-		"authToken": customerToken,
-	}).
+		SetHeader("Finicity-App-Key", appKey).
+		SetHeader("Finicity-App-Secret", appSecret).
+		SetHeader("Authorization", "Bearer "+customerToken).
 		Get("https://api.finicity.com/transactions/v2")
 
 	if err != nil {
