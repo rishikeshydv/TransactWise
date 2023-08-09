@@ -7,6 +7,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"gopkg.in/resty.v1"
+    "cloud.google.com/go/firestore"
+	"golang.org/x/net/context"
+	"google.golang.org/api/option"
 )
 
 func main() {
@@ -63,16 +66,20 @@ func connectBankHandler(c *gin.Context, finicityAppKey, finicityPartnerId, finic
 
 	// Store `resp.String()` or relevant data in your database for future use
     customerToken := resp.String()
+    	// Store the customerToken in Firestore
+	ctx := context.Background()
+	opt := option.WithCredentialsFile("firebase-credentials.json")
+	client, err := firestore.NewClient(ctx, os.Getenv("FIREBASE_PROJECT_ID"), opt)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to initialize Firestore client"})
+		return
+	}
+	defer client.Close()
 
-    // Save the customer token to Firebase
-    firebaseApp := initializeFirebase() // Initialize Firebase app here
+	_, err = client.Collection("users").Doc(os.Getenv("REBASE_DOCUMENT_ID")).Set(ctx, map[string]interface{}{
+		"customerToken": customerToken,
+	}, firestore.MergeAll)
 
-    // Assuming you have a "users" collection in Firestore
-    userDocRef := firebaseApp.Collection("users").Doc("your_customer_id")
-
-    _, err = userDocRef.Set(ctx, map[string]interface{}{
-        "customerToken": customerToken,
-    }, firestore.MergeAll)
     if err != nil {
         c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to store customer token"})
         return
