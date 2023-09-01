@@ -1,25 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import Token from './token';
+import React, { useState, useCallback } from 'react'
 
-
-function userid() {
+function requestAnalytics() {
     const [response, setResponse] = useState<string>("");
-    const idGenerator = async () => {
-    fetch("https://api.finicity.com/aggregation/v2/customers/testing",{
+
+    const reqAnalytic = async () => {
+        fetch("https://api.finicity.com/analytics/cashflow/v1/customer/7002533125/fcra?reference-number=abc123",{
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Finicity-App-Token": "",     //use the token 
                 "Finicity-App-Key": "0ec8bc7aac65c70b454e9680b3d6875a",
+                "Finicity-App-Token": "RfXSMOognGdStlfiGvwm",  //might need to change later
                 "Accept": "application/json",
                 "Host": "api.finicity.com",
                 "Accept-Encoding": "gzip, deflate, br",
                 "Connection": "keep-alive",
                             },
             body: JSON.stringify({
-                "username": "customer_1",
-                "firstName": "test1",
-                "lastName": "test1"
+                    "partnerId": "2445584276664",
+                    "partnerSecret": "BvMWvk7PZ8SrwA7TNDLx"
                 }),
         })
         .then(res => res.json())
@@ -27,10 +25,10 @@ function userid() {
             setResponse(data);
         })
         .catch(err => console.log(err));
-      }
+    };
   return (
-    <div>userid</div>
+    <div>requestAnalytics</div>
   )
 }
 
-export default userid
+export default requestAnalytics

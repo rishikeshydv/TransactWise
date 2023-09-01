@@ -1,26 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import Token from './token';
 
-
-function userid() {
+function customerAccTrans() {
     const [response, setResponse] = useState<string>("");
-    const idGenerator = async () => {
-    fetch("https://api.finicity.com/aggregation/v2/customers/testing",{
-            method: "POST",
+    const accTransactions = async () => {
+    fetch("https://api.finicity.com/aggregation/v1/customers/7002533125/accounts",{
+            method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Finicity-App-Token": "",     //use the token 
+                "Finicity-App-Token": "RfXSMOognGdStlfiGvwm", //might need to change tokens
                 "Finicity-App-Key": "0ec8bc7aac65c70b454e9680b3d6875a",
                 "Accept": "application/json",
                 "Host": "api.finicity.com",
                 "Accept-Encoding": "gzip, deflate, br",
                 "Connection": "keep-alive",
                             },
-            body: JSON.stringify({
-                "username": "customer_1",
-                "firstName": "test1",
-                "lastName": "test1"
-                }),
+                //GET has no body
         })
         .then(res => res.json())
         .then((data:string) =>{
@@ -29,8 +23,8 @@ function userid() {
         .catch(err => console.log(err));
       }
   return (
-    <div>userid</div>
+    <div>customerAccTrans</div>
   )
 }
 
-export default userid
+export default customerAccTrans

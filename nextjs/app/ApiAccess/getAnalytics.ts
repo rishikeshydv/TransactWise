@@ -1,26 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import Token from './token';
+import React, { useState, useCallback } from 'react'
 
-
-function userid() {
+function getAnalytics() {
     const [response, setResponse] = useState<string>("");
-    const idGenerator = async () => {
-    fetch("https://api.finicity.com/aggregation/v2/customers/testing",{
-            method: "POST",
+    const getAnalytics = async () => {
+    fetch("https://api.finicity.com/analytics/data/v1/%7B%7BobbFcraReportId%7D%7D/fcra?purpose=31",{
+            method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Finicity-App-Token": "",     //use the token 
+                "Finicity-App-Token": "RfXSMOognGdStlfiGvwm",  //change per session
                 "Finicity-App-Key": "0ec8bc7aac65c70b454e9680b3d6875a",
                 "Accept": "application/json",
                 "Host": "api.finicity.com",
                 "Accept-Encoding": "gzip, deflate, br",
                 "Connection": "keep-alive",
                             },
-            body: JSON.stringify({
-                "username": "customer_1",
-                "firstName": "test1",
-                "lastName": "test1"
-                }),
+                //GET has no body
         })
         .then(res => res.json())
         .then((data:string) =>{
@@ -29,8 +23,8 @@ function userid() {
         .catch(err => console.log(err));
       }
   return (
-    <div>userid</div>
+    <div>getAnalytics</div>
   )
 }
 
-export default userid
+export default getAnalytics

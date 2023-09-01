@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 
 function url() {
     const [response, setResponse] = useState<string>("");
-
+    const urlGenerator = async () => {
     fetch("https://api.finicity.com/connect/v2/generate",{
             method: "POST",
             headers: {
@@ -32,6 +32,7 @@ function url() {
             setResponse(data);
         })
         .catch(err => console.log(err));
+      }
   return (
     <div>url</div>
   )
