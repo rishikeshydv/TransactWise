@@ -55,9 +55,9 @@ Follow these steps to set up and run TransactWise locally:
    ```
 
 2. **Set Up the Backend (Golang)**
-   - Navigate to the `backend` directory:
+   - Navigate to the `server` directory:
      ```bash
-     cd backend
+     cd server
      ```
    - Install Go dependencies:
      ```bash
@@ -69,13 +69,13 @@ Follow these steps to set up and run TransactWise locally:
 
    - Start the backend server:
      ```bash
-     go run main.go
+     go run server.go
      ```
 
 3. **Set Up the Frontend (Next.js TypeScript)**
-   - Navigate to the `frontend` directory:
+   - Navigate to the `nextjs` directory:
      ```bash
-     cd ../frontend
+     cd ../nextjs
      ```
    - Install npm dependencies:
      ```bash
@@ -109,7 +109,7 @@ This project is licensed under the [MIT License](LICENSE). You are free to use a
 
 ## Contact
 
-For any questions or concerns, please contact [your-email@example.com](mailto:your-email@example.com).
+For any questions or concerns, please contact [rishikeshadh4@gmail.com](mailto:your-email@example.com).
 
 ---
 
