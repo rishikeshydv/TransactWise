@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Token from './token';
 
 
 function userid() {
@@ -9,7 +8,7 @@ function userid() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Finicity-App-Token": "",     //use the token 
+                "Finicity-App-Token": token,     //use the token 
                 "Finicity-App-Key": "0ec8bc7aac65c70b454e9680b3d6875a",
                 "Accept": "application/json",
                 "Host": "api.finicity.com",
@@ -28,9 +27,6 @@ function userid() {
         })
         .catch(err => console.log(err));
       }
-  return (
-    <div>userid</div>
-  )
 }
 
 export default userid
